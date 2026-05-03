@@ -90,29 +90,41 @@ function Results() {
 
         {/* Per-question detail */}
         <section className="mt-6 rounded-2xl border border-hairline bg-surface shadow-card">
-          <div className="border-b border-hairline px-5 py-4">
-            <h2 className="font-display text-base font-semibold">Question-by-question</h2>
-          </div>
-          <ul className="divide-y divide-[var(--hairline)]">
-            {QUESTIONS.map((q, i) => {
-              const v = answers[q.id];
-              return (
-                <li key={q.id} className="flex items-center gap-4 px-5 py-3">
-                  <span className="w-6 text-[11px] font-medium tabular-nums text-muted-foreground">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="text-[13px] font-medium">{q.topic}</div>
-                    <div className="truncate text-[11px] text-muted-foreground">{q.category}</div>
-                  </div>
-                  <div className="font-display text-base font-semibold tabular-nums">
-                    {typeof v === "number" ? v : "—"}
-                    <span className="text-xs text-muted-foreground">/10</span>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+          <details className="group">
+            <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4">
+              <h2 className="font-display text-base font-semibold">Question-by-question</h2>
+              <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180" />
+            </summary>
+            <ul className="divide-y divide-[var(--hairline)] border-t border-hairline">
+              {QUESTIONS.map((q, i) => {
+                const v = answers[q.id];
+                return (
+                  <li key={q.id} className="px-5 py-3">
+                    <details className="group/q">
+                      <summary className="flex cursor-pointer list-none items-center gap-4">
+                        <span className="w-6 text-[11px] font-medium tabular-nums text-muted-foreground">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-[13px] font-medium">{q.topic}</div>
+                          <div className="truncate text-[11px] text-muted-foreground">{q.category}</div>
+                        </div>
+                        <div className="font-display text-base font-semibold tabular-nums">
+                          {typeof v === "number" ? v : "—"}
+                          <span className="text-xs text-muted-foreground">/10</span>
+                        </div>
+                        <ChevronDown className="h-3.5 w-3.5 text-muted-foreground transition-transform group-open/q:rotate-180" />
+                      </summary>
+                      <div className="ml-10 mt-2 space-y-1 text-[12px] text-muted-foreground">
+                        <div className="text-foreground">{q.prompt}</div>
+                        {q.helper ? <div className="text-[11px]">{q.helper}</div> : null}
+                      </div>
+                    </details>
+                  </li>
+                );
+              })}
+            </ul>
+          </details>
         </section>
 
         {/* Actions */}
