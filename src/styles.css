@@ -93,11 +93,11 @@
   --popover: var(--surface);
   --popover-foreground: var(--foreground);
   --primary: var(--mint);
-  --primary-foreground: oklch(0.18 0.025 256);
+  --primary-foreground: oklch(0.99 0.003 250);
   --secondary: var(--surface-2);
   --secondary-foreground: var(--foreground);
-  --muted: var(--surface);
-  --muted-foreground: oklch(0.7 0.02 256);
+  --muted: var(--surface-2);
+  --muted-foreground: oklch(0.48 0.04 260);
   --accent: var(--surface-2);
   --accent-foreground: var(--foreground);
   --destructive: var(--rose);
