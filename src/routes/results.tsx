@@ -9,7 +9,7 @@ import {
   scoreFor,
   tierFor,
 } from "@/lib/quiz";
-import { RotateCcw, ArrowRight } from "lucide-react";
+import { RotateCcw, ArrowRight, ChevronDown } from "lucide-react";
 
 export const Route = createFileRoute("/results")({
   component: Results,
