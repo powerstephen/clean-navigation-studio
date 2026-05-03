@@ -3,30 +3,38 @@ import { useEffect, useState } from "react";
 import { AppHeader } from "@/components/AppHeader";
 import {
   QUESTIONS,
-  categoryScores,
   clearAnswers,
   loadAnswers,
+  loadContext,
   scoreFor,
   tierFor,
+  computeRoi,
+  formatCurrency,
+  type Context,
+  DEFAULT_CONTEXT,
 } from "@/lib/quiz";
-import { RotateCcw, ArrowRight, ChevronDown } from "lucide-react";
+import { RotateCcw, ArrowRight, ChevronDown, Calendar, TrendingDown, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/results")({
   component: Results,
   head: () => ({
-    meta: [{ title: "Your Pipeline Score — Pipeline Insights" }],
+    meta: [{ title: "Your Pipeline ROI — Pipeline Insights" }],
   }),
 });
 
 function Results() {
   const [answers, setAnswers] = useState<Record<string, number>>({});
+  const [ctx, setCtx] = useState<Context>(DEFAULT_CONTEXT);
+
   useEffect(() => {
     setAnswers(loadAnswers());
+    setCtx(loadContext());
   }, []);
 
   const score = scoreFor(answers);
-  const cats = categoryScores(answers);
   const tier = tierFor(score.pct);
+  const roi = computeRoi(answers, ctx);
+  const sortedCats = [...roi.cats].sort((a, b) => b.revenueAtRisk - a.revenueAtRisk);
 
   const toneClass: Record<string, string> = {
     mint: "text-mint",
@@ -59,37 +67,94 @@ function Results() {
           </div>
 
           <p className="mx-auto mt-5 max-w-xl text-[14px] text-muted-foreground">{tier.blurb}</p>
+        </section>
 
-          <div className="mt-3 text-[12px] text-muted-foreground">
-            {score.sum} of {score.max} points · {score.answered}/{score.total} answered
+        {/* ROI summary */}
+        <section className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="rounded-2xl border border-hairline bg-surface p-6 shadow-card">
+            <div className="flex items-center gap-2 text-rose">
+              <TrendingDown className="h-4 w-4" />
+              <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">Estimated revenue at risk</span>
+            </div>
+            <div className="mt-4 font-display text-[44px] font-semibold leading-none tabular-nums text-rose">
+              {formatCurrency(roi.totalAtRisk)}
+            </div>
+            <p className="mt-3 text-[13px] text-muted-foreground">
+              Annualised gap across all four pillars, based on {ctx.reps} reps × {ctx.dealsPerRep} deals × {ctx.closeRate}% close rate × {formatCurrency(ctx.acv)} ACV.
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-hairline bg-mint-soft p-6 shadow-card">
+            <div className="flex items-center gap-2 text-mint">
+              <Sparkles className="h-4 w-4" />
+              <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">Recoverable upside</span>
+            </div>
+            <div className="mt-4 font-display text-[44px] font-semibold leading-none tabular-nums text-mint">
+              {formatCurrency(roi.recoverable)}
+            </div>
+            <p className="mt-3 text-[13px] text-muted-foreground">
+              ~60% of the gap is realistically recoverable in 2–3 quarters with the right operating cadence.
+            </p>
           </div>
         </section>
 
-        {/* Category breakdown */}
-        <section className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {cats.map((c) => (
-            <div key={c.id} className="rounded-2xl border border-hairline bg-surface p-5 shadow-card">
-              <div className="flex items-baseline justify-between">
-                <div className="font-display text-base font-semibold">{c.label}</div>
-                <div className="font-display text-2xl font-semibold tabular-nums">
-                  {c.pct}<span className="text-sm text-muted-foreground">%</span>
+        {/* Per-category breakdown sorted by impact */}
+        <section className="mt-8 space-y-4">
+          <div className="flex items-baseline justify-between">
+            <h2 className="font-display text-xl font-semibold">Where the revenue is leaking</h2>
+            <span className="text-[11px] uppercase tracking-wider text-muted-foreground">Sorted by impact</span>
+          </div>
+
+          {sortedCats.map((c, i) => (
+            <article key={c.id} className="rounded-2xl border border-hairline bg-surface p-6 shadow-card">
+              <header className="flex flex-wrap items-start justify-between gap-4">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="grid h-6 w-6 place-items-center rounded-full bg-mint-soft font-display text-[11px] font-semibold text-mint tabular-nums">
+                      {i + 1}
+                    </span>
+                    <h3 className="font-display text-lg font-semibold">{c.label}</h3>
+                  </div>
+                  <div className="mt-3 flex items-center gap-3">
+                    <div className="h-1.5 w-40 overflow-hidden rounded-full bg-hairline">
+                      <div className="h-full rounded-full bg-mint transition-all duration-700" style={{ width: `${c.pct}%` }} />
+                    </div>
+                    <span className="font-display text-sm font-semibold tabular-nums">
+                      {c.pct}<span className="text-xs text-muted-foreground">%</span>
+                    </span>
+                    <span className="text-[11px] text-muted-foreground">score</span>
+                  </div>
                 </div>
+
+                <div className="text-right">
+                  <div className="text-[11px] uppercase tracking-wider text-muted-foreground">Revenue impact</div>
+                  <div className="font-display text-2xl font-semibold tabular-nums text-rose">
+                    {formatCurrency(c.revenueAtRisk)}
+                  </div>
+                </div>
+              </header>
+
+              <p className="mt-5 text-[14px] leading-relaxed text-foreground">{c.insight}</p>
+
+              <div className="mt-5">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-mint">Priority actions</div>
+                <ul className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  {c.actions.map((a, idx) => (
+                    <li key={idx} className="flex items-start gap-2.5 rounded-lg border border-hairline bg-background-elev px-3 py-2.5 text-[13px]">
+                      <span className="mt-[3px] grid h-4 w-4 shrink-0 place-items-center rounded-full bg-mint text-[10px] font-semibold text-primary-foreground tabular-nums">
+                        {idx + 1}
+                      </span>
+                      <span className="text-foreground/90">{a}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
-                <div
-                  className="h-full rounded-full bg-mint transition-all duration-700"
-                  style={{ width: `${c.pct}%` }}
-                />
-              </div>
-              <div className="mt-2 text-[11px] uppercase tracking-wider text-muted-foreground">
-                {c.sum} / {c.max} points
-              </div>
-            </div>
+            </article>
           ))}
         </section>
 
         {/* Per-question detail */}
-        <section className="mt-6 rounded-2xl border border-hairline bg-surface shadow-card">
+        <section className="mt-8 rounded-2xl border border-hairline bg-surface shadow-card">
           <details className="group">
             <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4">
               <h2 className="font-display text-base font-semibold">Question-by-question</h2>
@@ -125,6 +190,33 @@ function Results() {
               })}
             </ul>
           </details>
+        </section>
+
+        {/* CTA */}
+        <section className="mt-10 overflow-hidden rounded-3xl border border-hairline bg-foreground p-8 text-background shadow-card sm:p-10">
+          <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
+            <div className="max-w-xl">
+              <span className="font-display text-[11px] font-semibold uppercase tracking-[0.22em] text-background/70">
+                Sales Methodology Hub
+              </span>
+              <h2 className="mt-3 font-display text-3xl font-semibold leading-tight">
+                Recover {formatCurrency(roi.recoverable)} in pipeline.
+              </h2>
+              <p className="mt-3 text-[14px] leading-relaxed text-background/75">
+                Book a free 30-minute working session. We'll walk through your scores, pressure-test the numbers, and map the fastest path to closing your biggest gap.
+              </p>
+            </div>
+            <a
+              href="https://salesmethodologyhub.com/book"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex shrink-0 items-center gap-2 rounded-full bg-background px-6 py-3 text-[14px] font-semibold text-foreground transition hover:brightness-95"
+            >
+              <Calendar className="h-4 w-4" />
+              Book a free session
+              <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
         </section>
 
         {/* Actions */}
