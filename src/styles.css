@@ -113,7 +113,7 @@
   --sidebar: var(--background-elev);
   --sidebar-foreground: var(--foreground);
   --sidebar-primary: var(--mint);
-  --sidebar-primary-foreground: oklch(0.18 0.025 256);
+  --sidebar-primary-foreground: oklch(0.99 0.003 250);
   --sidebar-accent: var(--surface-2);
   --sidebar-accent-foreground: var(--foreground);
   --sidebar-border: var(--hairline);
