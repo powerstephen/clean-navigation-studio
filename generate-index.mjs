@@ -1,18 +1,11 @@
-import { readdir, writeFile, statSync } from 'fs';
-import { promisify } from 'util';
-
-const readdirAsync = promisify(readdir);
+import { readdirSync, statSync, writeFileSync } from 'fs';
 
 const assetsDir = 'dist/client/assets';
-const files = await readdirAsync(assetsDir);
+const files = readdirSync(assetsDir);
 
 const cssFile = files.find(f => f.endsWith('.css'));
 const jsFiles = files.filter(f => f.startsWith('index-') && f.endsWith('.js'));
-const entryJs = jsFiles.sort((a, b) => {
-  const sizeA = statSync(`${assetsDir}/${a}`).size;
-  const sizeB = statSync(`${assetsDir}/${b}`).size;
-  return sizeB - sizeA;
-})[0];
+const entryJs = jsFiles.sort((a, b) => statSync(`${assetsDir}/${b}`).size - statSync(`${assetsDir}/${a}`).size)[0];
 
 const html = `<!DOCTYPE html>
 <html lang="en">
@@ -32,5 +25,5 @@ const html = `<!DOCTYPE html>
   </body>
 </html>`;
 
-await writeFile('dist/client/index.html', html);
+writeFileSync('dist/client/index.html', html);
 console.log(`✓ Generated index.html → ${cssFile} + ${entryJs}`);
