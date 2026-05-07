@@ -1,9 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { AppHeader } from "@/components/AppHeader";
 import { QUESTIONS, loadContext, saveContext, type Context } from "@/lib/quiz";
 import { ArrowRight } from "lucide-react";
 import icebergHero from "@/assets/iceberg-hero.png";
+import logo from "@/assets/smh-logo.png";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -13,7 +13,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Score your pipeline management & forecasting maturity across Close Rate, Sales Cycle, ASP and Forecasting.",
+          "Rate your sales team across 15 questions and discover exactly how much revenue you're leaving on the table.",
       },
     ],
   }),
@@ -45,48 +45,55 @@ function Index() {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <AppHeader />
-
-      <main className="grid min-h-[calc(100vh-4rem)] grid-cols-1 lg:grid-cols-2">
+    <div
+      className="min-h-screen text-white"
+      style={{ backgroundColor: "#0a1f3d" }}
+    >
+      <main className="grid min-h-screen grid-cols-1 lg:grid-cols-2">
         {/* Left: content */}
-        <section className="flex items-center px-6 py-12 sm:px-10 lg:px-16 lg:py-20">
-          <div className="mx-auto w-full max-w-xl">
-            <h1 className="font-display text-5xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-6xl">
+        <section className="flex flex-col px-6 py-8 sm:px-10 lg:px-16 lg:py-12">
+          <div className="flex items-center gap-3">
+            <img src={logo} alt="Sales Methodology Hub" className="h-10 w-auto brightness-0 invert" />
+          </div>
+
+          <div className="mt-12 flex flex-1 flex-col justify-center max-w-xl lg:mt-20">
+            <h1 className="font-display text-5xl font-bold leading-[1.05] tracking-tight text-white sm:text-6xl">
               Are you leaving money on the table?
             </h1>
-            <p className="mt-5 text-base leading-relaxed text-muted-foreground sm:text-lg">
+            <p className="mt-5 text-base leading-relaxed text-white/70 sm:text-lg max-w-md">
               Rate your sales team across {QUESTIONS.length} questions and discover exactly how much
               revenue you're leaving on the table.
             </p>
 
-            <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
               {fields.map((f) => (
                 <label key={f.key} className="block">
-                  <span className="text-[12px] font-medium text-muted-foreground">{f.label}</span>
-                  <div className="mt-1.5 flex items-center rounded-lg border border-hairline-strong bg-background-elev px-3 focus-within:ring-2 focus-within:ring-ring">
-                    {f.prefix && <span className="text-sm text-muted-foreground">{f.prefix}</span>}
+                  <span className="text-[12px] font-medium text-white/60">{f.label}</span>
+                  <div
+                    className="mt-1.5 flex items-center rounded-lg border border-white/15 bg-white/5 px-3 focus-within:ring-2 focus-within:ring-blue-400 focus-within:border-blue-400/40"
+                  >
+                    {f.prefix && <span className="text-sm text-white/60">{f.prefix}</span>}
                     <input
                       inputMode="numeric"
                       value={String(ctx[f.key] ?? "")}
                       onChange={(e) => update(f.key, e.target.value)}
-                      className="w-full bg-transparent py-2.5 text-[15px] font-medium tabular-nums outline-none"
+                      className="w-full bg-transparent py-2.5 text-[15px] font-medium tabular-nums text-white outline-none placeholder:text-white/30"
                     />
-                    {f.suffix && <span className="text-sm text-muted-foreground">{f.suffix}</span>}
+                    {f.suffix && <span className="text-sm text-white/60">{f.suffix}</span>}
                   </div>
                 </label>
               ))}
             </div>
 
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div className="mt-10 flex flex-wrap items-center gap-4">
               <button
                 onClick={start}
-                className="inline-flex items-center gap-2 rounded-full bg-mint px-6 py-3 text-sm font-semibold text-primary-foreground shadow-glow transition hover:brightness-110"
+                className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-900/40 transition hover:bg-blue-500"
               >
                 Start the assessment
                 <ArrowRight className="h-4 w-4" />
               </button>
-              <span className="text-xs text-muted-foreground">
+              <span className="text-xs text-white/50">
                 ~3 minutes · {QUESTIONS.length} questions
               </span>
             </div>
