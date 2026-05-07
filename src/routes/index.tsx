@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { QUESTIONS, loadContext, saveContext, type Context } from "@/lib/quiz";
 import { ArrowRight } from "lucide-react";
 import icebergHero from "@/assets/iceberg-hero.png";
-import logo from "@/assets/smh-logo.png";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -55,19 +54,15 @@ function Index() {
         backgroundColor: "#0a1f3d",
       }}
     >
-      {/* Gradient overlay — dark left, clear right */}
+      {/* Gradient overlay — lighter top left so image logo shows, dark enough for text */}
       <div
         className="absolute inset-0"
         style={{
-          background: "linear-gradient(to right, rgba(10,31,61,0.92) 0%, rgba(10,31,61,0.75) 35%, rgba(10,31,61,0.0) 65%)",
+          background: "linear-gradient(to right, rgba(10,31,61,0.55) 0%, rgba(10,31,61,0.65) 35%, rgba(10,31,61,0.0) 65%)",
         }}
       />
 
       <main className="relative z-10 flex min-h-screen flex-col px-8 py-8 sm:px-12 lg:px-20 lg:py-12">
-        {/* Logo — top left */}
-        <div className="flex items-center gap-3">
-          <img src={logo} alt="Sales Methodology Hub" className="h-12 w-auto" />
-        </div>
 
         {/* Content */}
         <div className="mt-16 flex flex-1 flex-col justify-center max-w-2xl lg:mt-24">
