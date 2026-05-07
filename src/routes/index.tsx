@@ -46,40 +46,40 @@ function Index() {
 
   return (
     <div
-      className="relative min-h-screen text-white"
+      className="relative min-h-screen w-full text-white"
       style={{
         backgroundImage: `url(${icebergHero})`,
-        backgroundSize: "contain",
-        backgroundPosition: "center right",
+        backgroundSize: "cover",
+        backgroundPosition: "center center",
         backgroundRepeat: "no-repeat",
         backgroundColor: "#0a1f3d",
       }}
     >
-      {/* Subtle overlay — left side only so iceberg stays vivid on right */}
+      {/* Gradient overlay — dark left, clear right */}
       <div
         className="absolute inset-0"
         style={{
-          background: "linear-gradient(to right, rgba(10,31,61,0.75) 35%, rgba(10,31,61,0.0) 65%)",
+          background: "linear-gradient(to right, rgba(10,31,61,0.92) 0%, rgba(10,31,61,0.75) 35%, rgba(10,31,61,0.0) 65%)",
         }}
       />
 
-      <main className="relative z-10 flex min-h-screen flex-col px-6 py-8 sm:px-10 lg:px-16 lg:py-12">
-        {/* Logo */}
+      <main className="relative z-10 flex min-h-screen flex-col px-8 py-8 sm:px-12 lg:px-20 lg:py-12">
+        {/* Logo — top left */}
         <div className="flex items-center gap-3">
           <img src={logo} alt="Sales Methodology Hub" className="h-10 w-auto brightness-0 invert" />
         </div>
 
-        {/* Content — left side only */}
-        <div className="mt-16 flex flex-1 flex-col justify-center max-w-lg lg:mt-24">
-          <h1 className="font-display text-5xl font-bold leading-[1.05] tracking-tight text-white sm:text-6xl">
+        {/* Content */}
+        <div className="mt-16 flex flex-1 flex-col justify-center max-w-2xl lg:mt-24">
+          <h1 className="font-display text-5xl font-bold leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl">
             Are you leaving money on the table?
           </h1>
-          <p className="mt-5 text-base leading-relaxed text-white/80 sm:text-lg">
+          <p className="mt-5 text-base leading-relaxed text-white/80 sm:text-lg max-w-lg">
             Rate your sales team across {QUESTIONS.length} questions and discover exactly how much
             revenue you're leaving on the table.
           </p>
 
-          <div className="mt-10 grid grid-cols-2 gap-4">
+          <div className="mt-10 grid grid-cols-2 gap-4 max-w-lg">
             {fields.map((f) => (
               <label key={f.key} className="block">
                 <span className="text-[12px] font-medium text-white/70">{f.label}</span>
