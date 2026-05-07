@@ -12,7 +12,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Rate your sales team across 15 questions and discover exactly how much revenue you're leaving on the table.",
+          "A 3-minute diagnostic that tells you where your pipeline is leaking — and what it's costing you.",
       },
     ],
   }),
@@ -63,15 +63,12 @@ function Index() {
       />
 
       <main className="relative z-10 flex min-h-screen flex-col px-8 py-8 sm:px-12 lg:px-28 lg:py-12">
-
-        {/* Content */}
-        <div className="mt-16 flex flex-1 flex-col justify-center max-w-2xl lg:mt-24 lg:ml-8">
+        <div className="mt-10 flex flex-1 flex-col justify-center max-w-2xl lg:mt-10 lg:ml-8">
           <h1 className="font-display text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl">
             Are you leaving money on the table?
           </h1>
           <p className="mt-5 text-base leading-relaxed text-white/80 sm:text-lg max-w-lg">
-            Rate your sales team across {QUESTIONS.length} questions and discover exactly how much
-            revenue you're leaving on the table.
+            A 3-minute diagnostic that tells you where your pipeline is leaking — and what it's costing you.
           </p>
 
           <div className="mt-10 grid grid-cols-2 gap-4 max-w-lg">
