@@ -49,7 +49,7 @@ function Index() {
       style={{
         backgroundImage: `url(${icebergHero})`,
         backgroundSize: "cover",
-        backgroundPosition: "center center",
+        backgroundPosition: "top center",
         backgroundRepeat: "no-repeat",
         backgroundColor: "#0a1f3d",
       }}
