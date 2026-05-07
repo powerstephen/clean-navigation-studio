@@ -4,7 +4,7 @@ const assetsDir = 'dist/client/assets';
 const files = readdirSync(assetsDir);
 
 const cssFile = files.find(f => f.endsWith('.css'));
-const jsFiles = files.filter(f => f.startsWith('index-') && f.endsWith('.js'));
+const jsFiles = files.filter(f => f.endsWith('.js') && !f.includes('chunk'));
 const entryJs = jsFiles.sort((a, b) => statSync(`${assetsDir}/${b}`).size - statSync(`${assetsDir}/${a}`).size)[0];
 
 const html = `<!DOCTYPE html>
