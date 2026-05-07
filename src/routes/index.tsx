@@ -49,12 +49,19 @@ function Index() {
       className="relative min-h-screen text-white"
       style={{
         backgroundImage: `url(${icebergHero})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundSize: "contain",
+        backgroundPosition: "center right",
+        backgroundRepeat: "no-repeat",
+        backgroundColor: "#0a1f3d",
       }}
     >
-      {/* Overlay — light enough to see the iceberg */}
-      <div className="absolute inset-0 bg-[#0a1f3d]/40" />
+      {/* Subtle overlay — left side only so iceberg stays vivid on right */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: "linear-gradient(to right, rgba(10,31,61,0.85) 40%, rgba(10,31,61,0.15) 100%)",
+        }}
+      />
 
       <main className="relative z-10 flex min-h-screen flex-col px-6 py-8 sm:px-10 lg:px-16 lg:py-12">
         {/* Logo */}
@@ -62,17 +69,17 @@ function Index() {
           <img src={logo} alt="Sales Methodology Hub" className="h-10 w-auto brightness-0 invert" />
         </div>
 
-        {/* Content */}
-        <div className="mt-16 flex flex-1 flex-col justify-center max-w-xl lg:mt-24">
+        {/* Content — left side only */}
+        <div className="mt-16 flex flex-1 flex-col justify-center max-w-lg lg:mt-24">
           <h1 className="font-display text-5xl font-bold leading-[1.05] tracking-tight text-white sm:text-6xl">
             Are you leaving money on the table?
           </h1>
-          <p className="mt-5 text-base leading-relaxed text-white/80 sm:text-lg max-w-md">
+          <p className="mt-5 text-base leading-relaxed text-white/80 sm:text-lg">
             Rate your sales team across {QUESTIONS.length} questions and discover exactly how much
             revenue you're leaving on the table.
           </p>
 
-          <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="mt-10 grid grid-cols-2 gap-4">
             {fields.map((f) => (
               <label key={f.key} className="block">
                 <span className="text-[12px] font-medium text-white/70">{f.label}</span>
