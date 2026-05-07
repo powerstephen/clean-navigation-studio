@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppHeader } from "@/components/AppHeader";
-import { CATEGORIES, QUESTIONS, loadContext, saveContext, type Context } from "@/lib/quiz";
-import { ArrowRight, Target, Gauge, DollarSign, LineChart } from "lucide-react";
+import { QUESTIONS, loadContext, saveContext, type Context } from "@/lib/quiz";
+import { ArrowRight } from "lucide-react";
+import icebergHero from "@/assets/iceberg-hero.png";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -17,8 +18,6 @@ export const Route = createFileRoute("/")({
     ],
   }),
 });
-
-const ICONS = [Target, Gauge, DollarSign, LineChart];
 
 function Index() {
   const navigate = useNavigate();
@@ -49,77 +48,57 @@ function Index() {
     <div className="min-h-screen bg-background text-foreground">
       <AppHeader />
 
-      <main className="mx-auto max-w-[1100px] px-6 py-16">
-        <div className="max-w-2xl">
-          <span className="font-display text-[11px] font-semibold uppercase tracking-[0.22em] text-mint">
-            Pipeline & Forecasting Quiz
-          </span>
-          <h1 className="mt-4 font-display text-5xl font-semibold leading-[1.05] tracking-tight">
-            How healthy is your pipeline really?
-          </h1>
-          <p className="mt-5 text-[15px] leading-relaxed text-muted-foreground">
-            Rate your team from <span className="text-foreground font-medium">1 to 10</span> across {QUESTIONS.length} questions
-            covering the four pillars of pipeline health. Get an instant score and a personalised revenue-at-risk estimate.
-          </p>
-        </div>
+      <main className="grid min-h-[calc(100vh-4rem)] grid-cols-1 lg:grid-cols-2">
+        {/* Left: content */}
+        <section className="flex items-center px-6 py-12 sm:px-10 lg:px-16 lg:py-20">
+          <div className="mx-auto w-full max-w-xl">
+            <h1 className="font-display text-5xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-6xl">
+              Are you leaving money on the table?
+            </h1>
+            <p className="mt-5 text-base leading-relaxed text-muted-foreground sm:text-lg">
+              Rate your sales team across {QUESTIONS.length} questions and discover exactly how much
+              revenue you're leaving on the table.
+            </p>
 
-        {/* Context inputs */}
-        <section className="mt-10 rounded-2xl border border-hairline bg-surface p-6 shadow-card sm:p-8">
-          <div className="flex items-baseline justify-between">
-            <h2 className="font-display text-lg font-semibold">Tell us about your sales motion</h2>
-            <span className="text-[11px] uppercase tracking-wider text-muted-foreground">Used to calculate your ROI</span>
-          </div>
+            <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {fields.map((f) => (
+                <label key={f.key} className="block">
+                  <span className="text-[12px] font-medium text-muted-foreground">{f.label}</span>
+                  <div className="mt-1.5 flex items-center rounded-lg border border-hairline-strong bg-background-elev px-3 focus-within:ring-2 focus-within:ring-ring">
+                    {f.prefix && <span className="text-sm text-muted-foreground">{f.prefix}</span>}
+                    <input
+                      inputMode="numeric"
+                      value={String(ctx[f.key] ?? "")}
+                      onChange={(e) => update(f.key, e.target.value)}
+                      className="w-full bg-transparent py-2.5 text-[15px] font-medium tabular-nums outline-none"
+                    />
+                    {f.suffix && <span className="text-sm text-muted-foreground">{f.suffix}</span>}
+                  </div>
+                </label>
+              ))}
+            </div>
 
-          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {fields.map((f) => (
-              <label key={f.key} className="block">
-                <span className="text-[12px] font-medium text-muted-foreground">{f.label}</span>
-                <div className="mt-1.5 flex items-center rounded-lg border border-hairline-strong bg-background-elev px-3 focus-within:ring-2 focus-within:ring-ring">
-                  {f.prefix && <span className="text-sm text-muted-foreground">{f.prefix}</span>}
-                  <input
-                    inputMode="numeric"
-                    value={String(ctx[f.key] ?? "")}
-                    onChange={(e) => update(f.key, e.target.value)}
-                    className="w-full bg-transparent py-2.5 text-[15px] font-medium tabular-nums outline-none"
-                  />
-                  {f.suffix && <span className="text-sm text-muted-foreground">{f.suffix}</span>}
-                </div>
-              </label>
-            ))}
-          </div>
-
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            <button
-              onClick={start}
-              className="inline-flex items-center gap-2 rounded-full bg-mint px-6 py-3 text-sm font-semibold text-primary-foreground shadow-glow transition hover:brightness-110"
-            >
-              Start the assessment
-              <ArrowRight className="h-4 w-4" />
-            </button>
-            <span className="text-xs text-muted-foreground">~3 minutes · {QUESTIONS.length} questions</span>
-          </div>
-        </section>
-
-        <section className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {CATEGORIES.map((c, i) => {
-            const Icon = ICONS[i];
-            const count = QUESTIONS.filter((q) => q.category === c.label).length;
-            return (
-              <div
-                key={c.id}
-                className="rounded-2xl border border-hairline bg-surface p-5 shadow-card"
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <button
+                onClick={start}
+                className="inline-flex items-center gap-2 rounded-full bg-mint px-6 py-3 text-sm font-semibold text-primary-foreground shadow-glow transition hover:brightness-110"
               >
-                <div className="grid h-9 w-9 place-items-center rounded-lg bg-mint-soft text-mint">
-                  <Icon className="h-4 w-4" />
-                </div>
-                <div className="mt-4 font-display text-base font-semibold">{c.label}</div>
-                <div className="mt-1 text-[12px] text-muted-foreground">
-                  {count} question{count > 1 ? "s" : ""}
-                </div>
-              </div>
-            );
-          })}
+                Start the assessment
+                <ArrowRight className="h-4 w-4" />
+              </button>
+              <span className="text-xs text-muted-foreground">
+                ~3 minutes · {QUESTIONS.length} questions
+              </span>
+            </div>
+          </div>
         </section>
+
+        {/* Right: iceberg image */}
+        <section
+          aria-hidden="true"
+          className="relative hidden min-h-[420px] bg-cover bg-center lg:block"
+          style={{ backgroundImage: `url(${icebergHero})` }}
+        />
       </main>
     </div>
   );
