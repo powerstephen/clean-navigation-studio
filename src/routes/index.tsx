@@ -54,7 +54,7 @@ function Index() {
         backgroundColor: "#0a1f3d",
       }}
     >
-      {/* Gradient overlay — lighter top left so image logo shows, dark enough for text */}
+      {/* Gradient overlay */}
       <div
         className="absolute inset-0"
         style={{
@@ -62,11 +62,11 @@ function Index() {
         }}
       />
 
-      <main className="relative z-10 flex min-h-screen flex-col px-8 py-8 sm:px-12 lg:px-20 lg:py-12">
+      <main className="relative z-10 flex min-h-screen flex-col px-8 py-8 sm:px-12 lg:px-28 lg:py-12">
 
         {/* Content */}
-        <div className="mt-16 flex flex-1 flex-col justify-center max-w-2xl lg:mt-24">
-          <h1 className="font-display text-5xl font-bold leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl">
+        <div className="mt-16 flex flex-1 flex-col justify-center max-w-2xl lg:mt-24 lg:ml-8">
+          <h1 className="font-display text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl">
             Are you leaving money on the table?
           </h1>
           <p className="mt-5 text-base leading-relaxed text-white/80 sm:text-lg max-w-lg">
