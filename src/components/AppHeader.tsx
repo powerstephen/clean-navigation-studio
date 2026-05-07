@@ -14,7 +14,7 @@ export function AppHeader({
     <header className="sticky top-0 z-40 border-b border-hairline bg-background/85 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-[760px] items-center justify-between px-6">
         <Link to="/" className="flex items-center gap-2.5">
-          <img src={logo} alt="Sales Methodology Hub" className="h-8 w-auto" />
+          <img src={logo} alt="Sales Methodology Hub" className="h-7 w-auto" />
         </Link>
         {step && total ? (
           <div className="flex items-center gap-3">
