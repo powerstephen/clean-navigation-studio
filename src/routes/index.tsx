@@ -59,7 +59,7 @@ function Index() {
       <div
         className="absolute inset-0"
         style={{
-          background: "linear-gradient(to right, rgba(10,31,61,0.85) 40%, rgba(10,31,61,0.15) 100%)",
+          background: "linear-gradient(to right, rgba(10,31,61,0.75) 35%, rgba(10,31,61,0.0) 65%)",
         }}
       />
 
