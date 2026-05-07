@@ -50,14 +50,6 @@ export const QUESTIONS: Question[] = [
     prompt: "Do reps execute the sales process consistently on every deal in CRM?",
     helper: "1 = inconsistent · 10 = consistent and visible in Salesforce",
   },
-  {
-    id: "visibility",
-    category: "Close Rate",
-    topic: "Deal Visibility",
-    prompt: "Do you have CRM fields (MEDDPICC, risks, etc.) that reps actually fill out?",
-    helper: "1 = no visibility · 10 = full deal context in CRM",
-  },
-
   // Sales Cycle
   {
     id: "speed",
@@ -70,14 +62,14 @@ export const QUESTIONS: Question[] = [
     id: "pushed",
     category: "Sales Cycle",
     topic: "Pushed Deals",
-    prompt: "How rarely do deals get pushed and miss the month or quarter?",
+    prompt: "How often do your deals slip past their committed close date?",
     helper: "1 = constantly slipping · 10 = rarely pushed",
   },
   {
     id: "time-to-lose",
     category: "Sales Cycle",
     topic: "Time to Lose",
-    prompt: "Do you know how long it takes to lose a deal — and walk away in time?",
+    prompt: "Do your reps know when to walk away from a deal that won't close?",
     helper: "1 = deals linger forever · 10 = clear walk-away signals",
   },
 
@@ -100,7 +92,7 @@ export const QUESTIONS: Question[] = [
     id: "process-fit",
     category: "Average Sales Price",
     topic: "Process Fit",
-    prompt: "Is your sales process built for the kind of deals you sell?",
+    prompt: "Does your sales process match the complexity of your deals?",
     helper: "1 = mismatch · 10 = tailored to strategic + transactional motion",
   },
 
@@ -132,13 +124,6 @@ export const QUESTIONS: Question[] = [
     topic: "Documentation",
     prompt: "Do you have a defined and documented forecasting process?",
     helper: "1 = nothing written · 10 = clear, shared playbook",
-  },
-  {
-    id: "actual-forecast",
-    category: "Forecasting",
-    topic: "Visible Forecast",
-    prompt: "Can leadership actually see the forecast at any time?",
-    helper: "1 = lives in someone's head · 10 = always visible & current",
   },
 ];
 
