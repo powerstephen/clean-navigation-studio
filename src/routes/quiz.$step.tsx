@@ -43,7 +43,7 @@ function QuizStep() {
     <div className="min-h-screen bg-background text-foreground">
       <AppHeader step={idx + 1} total={total} />
 
-      <main className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-[760px] flex-col px-6 py-12">
+      <main className="mx-auto max-w-[760px] flex-col px-6 py-12">
         <div className="flex items-center gap-3">
           <span className="font-display text-[11px] font-semibold uppercase tracking-[0.22em] text-mint">
             {q.category}
@@ -61,7 +61,6 @@ function QuizStep() {
           <p className="mt-4 text-[14px] italic text-muted-foreground">{q.helper}</p>
         )}
 
-        {/* 1-10 selector */}
         <div className="mt-12">
           <div className="grid grid-cols-10 gap-1.5 sm:gap-2">
             {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => {
@@ -87,8 +86,7 @@ function QuizStep() {
           </div>
         </div>
 
-        {/* Footer nav */}
-        <div className="mt-12 flex items-center justify-between">">
+        <div className="mt-12 flex items-center justify-between">
           {idx > 0 ? (
             <Link
               to="/quiz/$step"
