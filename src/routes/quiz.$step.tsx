@@ -88,7 +88,7 @@ function QuizStep() {
         </div>
 
         {/* Footer nav */}
-        <div className="mt-auto flex items-center justify-between pt-12">
+        <div className="mt-12 flex items-center justify-between">">
           {idx > 0 ? (
             <Link
               to="/quiz/$step"
