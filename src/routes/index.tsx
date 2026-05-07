@@ -66,7 +66,7 @@ function Index() {
       <main className="relative z-10 flex min-h-screen flex-col px-8 py-8 sm:px-12 lg:px-20 lg:py-12">
         {/* Logo — top left */}
         <div className="flex items-center gap-3">
-          <img src={logo} alt="Sales Methodology Hub" className="h-10 w-auto brightness-0 invert" />
+          <img src={logo} alt="Sales Methodology Hub" className="h-12 w-auto" />
         </div>
 
         {/* Content */}
