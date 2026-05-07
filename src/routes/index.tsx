@@ -53,8 +53,8 @@ function Index() {
         backgroundPosition: "center",
       }}
     >
-      {/* Dark overlay so text is readable */}
-      <div className="absolute inset-0 bg-[#0a1f3d]/70" />
+      {/* Overlay — light enough to see the iceberg */}
+      <div className="absolute inset-0 bg-[#0a1f3d]/40" />
 
       <main className="relative z-10 flex min-h-screen flex-col px-6 py-8 sm:px-10 lg:px-16 lg:py-12">
         {/* Logo */}
@@ -62,7 +62,7 @@ function Index() {
           <img src={logo} alt="Sales Methodology Hub" className="h-10 w-auto brightness-0 invert" />
         </div>
 
-        {/* Content — left-aligned, max half width on large screens */}
+        {/* Content */}
         <div className="mt-16 flex flex-1 flex-col justify-center max-w-xl lg:mt-24">
           <h1 className="font-display text-5xl font-bold leading-[1.05] tracking-tight text-white sm:text-6xl">
             Are you leaving money on the table?
