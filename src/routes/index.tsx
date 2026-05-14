@@ -1,18 +1,16 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { QUESTIONS, loadContext, saveContext, type Context } from "@/lib/quiz";
 import { ArrowRight } from "lucide-react";
-import icebergHero from "@/assets/iceberg-hero.png";
+import { loadContext, saveContext, roleFraming, tierFor, type RoiContext, DEFAULT_CONTEXT } from "@/lib/quiz";
 
 export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "Pipeline Insights — ROI Self-Assessment" },
+      { title: "Revenue Gap Calculator — Sales Methodology Hub" },
       {
         name: "description",
-        content:
-          "A 3-minute diagnostic that tells you where your pipeline is leaking — and what it's costing you.",
+        content: "See what your execution gap is costing you — and what closing it is worth.",
       },
     ],
   }),
@@ -20,89 +18,153 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const navigate = useNavigate();
-  const [ctx, setCtx] = useState<Context>({ acv: 0, reps: 0, dealsPerRep: 0, closeRate: 0 });
+  const [ctx, setCtx] = useState<RoiContext>(DEFAULT_CONTEXT);
+  const [errors, setErrors] = useState<Partial<Record<keyof RoiContext, string>>>({});
 
   useEffect(() => {
     setCtx(loadContext());
   }, []);
 
-  const update = (k: keyof Context, v: string) => {
-    const n = Number(v.replace(/[^0-9.]/g, ""));
-    setCtx((c) => ({ ...c, [k]: isFinite(n) ? n : 0 }));
+  const upd = (k: keyof RoiContext, v: string) => {
+    const n = parseFloat(v.replace(/[^0-9.]/g, ""));
+    setCtx(c => ({ ...c, [k]: isFinite(n) ? n : 0 }));
+    setErrors(e => ({ ...e, [k]: undefined }));
+  };
+
+  const validate = () => {
+    const e: Partial<Record<keyof RoiContext, string>> = {};
+    if (!ctx.revenueTarget || ctx.revenueTarget < 10000) e.revenueTarget = "Enter a valid revenue target";
+    if (!ctx.quotaAttainPct || ctx.quotaAttainPct < 1 || ctx.quotaAttainPct > 100) e.quotaAttainPct = "Enter a % between 1 and 100";
+    if (!ctx.rampMonths || ctx.rampMonths < 1) e.rampMonths = "Enter ramp time in months";
+    return e;
   };
 
   const start = () => {
+    const e = validate();
+    if (Object.keys(e).length) { setErrors(e); return; }
     saveContext(ctx);
-    navigate({ to: "/quiz/$step", params: { step: "1" } });
+    navigate({ to: "/results" });
   };
 
-  const fields: { key: keyof Context; label: string; suffix?: string; prefix?: string }[] = [
-    { key: "acv", label: "Average contract value", prefix: "$" },
-    { key: "reps", label: "Number of reps" },
-    { key: "dealsPerRep", label: "Deals per rep / year" },
-    { key: "closeRate", label: "Current close rate", suffix: "%" },
-  ];
+  const framing = roleFraming(ctx.role);
+  const tier = tierFor(ctx.executionScore);
 
   return (
-    <div
-      className="relative min-h-screen w-full text-white"
-      style={{
-        backgroundImage: `url(${icebergHero})`,
-        backgroundSize: "cover",
-        backgroundPosition: "top center",
-        backgroundRepeat: "no-repeat",
-        backgroundColor: "#0a1f3d",
-      }}
-    >
-      {/* Gradient overlay */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background: "linear-gradient(to right, rgba(10,31,61,0.55) 0%, rgba(10,31,61,0.65) 35%, rgba(10,31,61,0.0) 65%)",
-        }}
-      />
+    <div className="min-h-screen bg-[#F4F6F9] text-foreground">
+      <div className="mx-auto max-w-[680px] px-6 py-12">
 
-      <main className="relative z-10 flex min-h-screen flex-col px-8 py-8 sm:px-12 lg:px-28 lg:py-12">
-        <div className="mt-10 flex flex-1 flex-col justify-center max-w-2xl lg:mt-10 lg:ml-8">
-          <h1 className="font-display text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl">
-            Are you leaving money on the table?
-          </h1>
-          <p className="mt-5 text-base leading-relaxed text-white/80 sm:text-lg max-w-lg">
-            A 3-minute diagnostic that tells you where your pipeline is leaking — and what it's costing you.
-          </p>
-
-          <div className="mt-10 grid grid-cols-2 gap-4 max-w-lg">
-            {fields.map((f) => (
-              <label key={f.key} className="block">
-                <span className="text-[12px] font-medium text-white/70">{f.label}</span>
-                <div className="mt-1.5 flex items-center rounded-lg border border-white/20 bg-white/10 px-3 backdrop-blur-sm focus-within:ring-2 focus-within:ring-blue-400 focus-within:border-blue-400/40">
-                  {f.prefix && <span className="text-sm text-white/60">{f.prefix}</span>}
-                  <input
-                    inputMode="numeric"
-                    value={String(ctx[f.key] ?? "")}
-                    onChange={(e) => update(f.key, e.target.value)}
-                    className="w-full bg-transparent py-2.5 text-[15px] font-medium tabular-nums text-white outline-none placeholder:text-white/30"
-                  />
-                  {f.suffix && <span className="text-sm text-white/60">{f.suffix}</span>}
-                </div>
-              </label>
-            ))}
+        {/* Header */}
+        <div style={{ background: "#0a1f3d", borderRadius: 12, padding: "1.75rem 2rem", marginBottom: 24 }}>
+          <div style={{ fontSize: 10, fontWeight: 600, color: "rgba(255,255,255,0.35)", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 12 }}>
+            Sales Methodology Hub · Revenue Gap Calculator
           </div>
+          <h1 style={{ fontSize: 26, fontWeight: 600, color: "white", lineHeight: 1.3, marginBottom: 10 }}>
+            {framing.headline}
+          </h1>
+          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.65 }}>
+            {framing.sub}
+          </p>
+        </div>
 
-          <div className="mt-10 flex flex-wrap items-center gap-4">
-            <button
-              onClick={start}
-              className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-900/40 transition hover:bg-blue-500"
-            >
-              Start the assessment
-              <ArrowRight className="h-4 w-4" />
-            </button>
-            <span className="text-xs text-white/50">
-              ~3 minutes · {QUESTIONS.length} questions
-            </span>
+        {/* Execution score + methodology from Methodology Finder */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 24 }}>
+          <div style={{ background: "white", border: "0.5px solid #E2E8F0", borderRadius: 10, padding: "1.25rem" }}>
+            <div style={{ fontSize: 11, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>Your execution score</div>
+            <div style={{ fontSize: 32, fontWeight: 600, color: tier.hex, lineHeight: 1 }}>{ctx.executionScore}%</div>
+            <span style={{ display: "inline-block", marginTop: 8, fontSize: 11, fontWeight: 500, padding: "2px 10px", borderRadius: 20, background: tier.bg, color: tier.color }}>{tier.label}</span>
+          </div>
+          <div style={{ background: "white", border: "0.5px solid #E2E8F0", borderRadius: 10, padding: "1.25rem" }}>
+            <div style={{ fontSize: 11, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>Recommended methodology</div>
+            <div style={{ fontSize: 22, fontWeight: 600, color: "#0a1f3d", lineHeight: 1.2, marginTop: 4 }}>{ctx.methodology}</div>
+            <span style={{ display: "inline-block", marginTop: 8, fontSize: 11, fontWeight: 500, padding: "2px 10px", borderRadius: 20, background: "#E1F5EE", color: "#085041" }}>Matched to your profile</span>
           </div>
         </div>
-      </main>
+
+        {/* Divider */}
+        <div style={{ borderLeft: "3px solid #0a1f3d", paddingLeft: 14, marginBottom: 24 }}>
+          <p style={{ fontSize: 13, color: "#475569", lineHeight: 1.65 }}>
+            Three more questions to calculate your exact revenue gap. These are the numbers that make the model accurate — take 60 seconds to get them right.
+          </p>
+        </div>
+
+        {/* 3 Questions */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 28 }}>
+
+          {/* Q1 — Revenue target */}
+          <div style={{ background: "white", border: `0.5px solid ${errors.revenueTarget ? "#DC2626" : "#E2E8F0"}`, borderRadius: 10, padding: "1.25rem" }}>
+            <label style={{ fontSize: 14, fontWeight: 500, color: "#0a1f3d", display: "block", marginBottom: 4 }}>
+              What is your annual revenue target?
+            </label>
+            <p style={{ fontSize: 12, color: "#64748B", marginBottom: 12 }}>The number you're accountable for delivering this year.</p>
+            <div style={{ display: "flex", alignItems: "center", border: "0.5px solid #CBD5E1", borderRadius: 8, overflow: "hidden" }}>
+              <span style={{ padding: "10px 14px", background: "#F8FAFC", color: "#64748B", fontSize: 14, borderRight: "0.5px solid #CBD5E1" }}>£</span>
+              <input
+                type="number"
+                value={ctx.revenueTarget || ""}
+                onChange={e => upd("revenueTarget", e.target.value)}
+                placeholder="e.g. 5000000"
+                style={{ flex: 1, padding: "10px 14px", fontSize: 16, fontWeight: 500, color: "#0a1f3d", border: "none", outline: "none", background: "white" }}
+              />
+            </div>
+            {errors.revenueTarget && <p style={{ fontSize: 12, color: "#DC2626", marginTop: 6 }}>{errors.revenueTarget}</p>}
+          </div>
+
+          {/* Q2 — Quota attainment */}
+          <div style={{ background: "white", border: `0.5px solid ${errors.quotaAttainPct ? "#DC2626" : "#E2E8F0"}`, borderRadius: 10, padding: "1.25rem" }}>
+            <label style={{ fontSize: 14, fontWeight: 500, color: "#0a1f3d", display: "block", marginBottom: 4 }}>
+              What % of your reps are hitting quota right now?
+            </label>
+            <p style={{ fontSize: 12, color: "#64748B", marginBottom: 12 }}>The honest number — industry benchmark is 60–65%.</p>
+            <div style={{ display: "flex", alignItems: "center", border: "0.5px solid #CBD5E1", borderRadius: 8, overflow: "hidden" }}>
+              <input
+                type="number"
+                value={ctx.quotaAttainPct || ""}
+                onChange={e => upd("quotaAttainPct", e.target.value)}
+                placeholder="e.g. 55"
+                min="1"
+                max="100"
+                style={{ flex: 1, padding: "10px 14px", fontSize: 16, fontWeight: 500, color: "#0a1f3d", border: "none", outline: "none", background: "white" }}
+              />
+              <span style={{ padding: "10px 14px", background: "#F8FAFC", color: "#64748B", fontSize: 14, borderLeft: "0.5px solid #CBD5E1" }}>%</span>
+            </div>
+            {errors.quotaAttainPct && <p style={{ fontSize: 12, color: "#DC2626", marginTop: 6 }}>{errors.quotaAttainPct}</p>}
+          </div>
+
+          {/* Q3 — Ramp time */}
+          <div style={{ background: "white", border: `0.5px solid ${errors.rampMonths ? "#DC2626" : "#E2E8F0"}`, borderRadius: 10, padding: "1.25rem" }}>
+            <label style={{ fontSize: 14, fontWeight: 500, color: "#0a1f3d", display: "block", marginBottom: 4 }}>
+              How many months before a new rep hits full productivity?
+            </label>
+            <p style={{ fontSize: 12, color: "#64748B", marginBottom: 12 }}>From day one to running deals independently at full quota.</p>
+            <div style={{ display: "flex", alignItems: "center", border: "0.5px solid #CBD5E1", borderRadius: 8, overflow: "hidden" }}>
+              <input
+                type="number"
+                value={ctx.rampMonths || ""}
+                onChange={e => upd("rampMonths", e.target.value)}
+                placeholder="e.g. 5"
+                min="1"
+                max="24"
+                style={{ flex: 1, padding: "10px 14px", fontSize: 16, fontWeight: 500, color: "#0a1f3d", border: "none", outline: "none", background: "white" }}
+              />
+              <span style={{ padding: "10px 14px", background: "#F8FAFC", color: "#64748B", fontSize: 14, borderLeft: "0.5px solid #CBD5E1" }}>months</span>
+            </div>
+            {errors.rampMonths && <p style={{ fontSize: 12, color: "#DC2626", marginTop: 6 }}>{errors.rampMonths}</p>}
+          </div>
+        </div>
+
+        {/* CTA */}
+        <button
+          onClick={start}
+          style={{ width: "100%", background: "#0a1f3d", color: "white", border: "none", borderRadius: 10, padding: "15px 28px", fontSize: 15, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}
+        >
+          Calculate my revenue gap
+          <ArrowRight style={{ width: 16, height: 16 }} />
+        </button>
+
+        <p style={{ textAlign: "center", fontSize: 12, color: "#94A3B8", marginTop: 12 }}>
+          Takes under 60 seconds · salesmethodologyhub.com
+        </p>
+      </div>
     </div>
   );
 }
